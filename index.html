@@ -10,7 +10,7 @@
   </head>
   <body>
   	<div class="LIL">
-  		<canvas id="myCanvas" width="800" height="800"></canvas>
+  		<canvas id="myCanvas" width="800" height="800" style="padding-top:5%; padding-left:10%;"></canvas>
   	</div>    
     <script>
       window.requestAnimFrame = (function(callback) {
@@ -24,42 +24,12 @@
         balls = [];
         var offset = 600;
 
-        for (var i = 20; i < window.innerWidth-20; i += 40){
-        	for (var j = 20; j < window.innerHeight-20; j+=40){
+        for (var i = 20; i < window.innerWidth*0.8; i += 40){
+        	for (var j = 20; j < window.innerHeight*0.8; j+=40){
         	color = 'rgb(' + Math.floor(Math.random()*255) + ',' + Math.floor(Math.random()*255) + ',' + Math.floor(Math.random()*255) + ')';
         	balls.push(new Ball(i, j, 0, 0, color));
         }
         }
-        
-
-
-        // balls.push(new Ball(offset + 200, 200, 0, 0, green));
-        // balls.push(new Ball(offset + 220, 220, 0, 0, green));
-        // balls.push(new Ball(offset + 240, 240, 0, 0, green));
-        // balls.push(new Ball(offset + 260, 260, 0, 0, green));
-        // balls.push(new Ball(offset + 280, 280, 0, 0, green));
-        // balls.push(new Ball(offset + 300, 300, 0, 0, green));
-
-        // balls.push(new Ball(offset + 180, 420, 0, 0, blue));
-        // balls.push(new Ball(offset + 200, 400, 0, 0, blue));
-        // balls.push(new Ball(offset + 220, 380, 0, 0, blue));
-        // balls.push(new Ball(offset + 240, 360, 0, 0, blue));
-        // balls.push(new Ball(offset + 260, 340, 0, 0, blue));
-        // balls.push(new Ball(offset + 280, 320, 0, 0, blue));
-        
-        // balls.push(new Ball(offset + 160, 400, 0, 0, red));
-        // balls.push(new Ball(offset + 140, 380, 0, 0, red));
-        // balls.push(new Ball(offset + 120, 360, 0, 0, red));
-        // balls.push(new Ball(offset + 100, 340, 0, 0, red));
-        // balls.push(new Ball(offset + 80, 320, 0, 0, red));
-        // balls.push(new Ball(offset + 60, 300, 0, 0, red));
-        
-        // balls.push(new Ball(offset + 80, 280, 0, 0, yellow));
-        // balls.push(new Ball(offset + 100, 260, 0, 0, yellow));
-        // balls.push(new Ball(offset + 120, 240, 0, 0, yellow));
-        // balls.push(new Ball(offset + 140, 220, 0, 0, yellow));
-        // balls.push(new Ball(offset + 160, 200, 0, 0, yellow));
-        // balls.push(new Ball(offset + 180, 180, 0, 0, yellow));
 
         return balls;
       }
@@ -70,9 +40,6 @@
         var floorFriction = 0.0005 * timeDiff;
         var mouseForceMultiplier = 1 * timeDiff;
         var restoreForce = 0.002 * timeDiff;
-
-
-        
 
         for(var n = 0; n < balls.length; n++) {
           var ball = balls[n];
@@ -176,8 +143,8 @@
 
       function animate(canvas, balls, lastTime) {
         var context = canvas.getContext('2d');
-        context.canvas.width  = window.innerWidth;
-  		context.canvas.height = window.innerHeight;
+        context.canvas.width  = window.innerWidth-window.innerWidth*0.2;
+  		context.canvas.height = window.innerHeight-window.innerHeight*0.2;
 
         var date = new Date();
         var time = date.getTime();
@@ -186,9 +153,6 @@
         lastTime = time;
 
         context.clearRect(0, 0, canvas.width, canvas.height);
-
-        context.font="50px Georgia";
-		context.fillText("CLICK TO ANIMATE",120,380);
 
         for(var n = 0; n < balls.length; n++) {
           var ball = balls[n];
