@@ -1,0 +1,241 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+  </head>
+  <body>
+  	<div class="LIL">
+  		<canvas id="myCanvas" width="800" height="800"></canvas>
+  	</div>    
+    <script>
+      window.requestAnimFrame = (function(callback) {
+        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+        function(callback) {
+          window.setTimeout(callback, 1000 / 60);
+        };
+      })();
+
+      function initBalls(canvas) {
+        balls = [];
+        var offset = 600;
+
+        for (var i = 20; i < window.innerWidth-20; i += 40){
+        	for (var j = 20; j < window.innerHeight-20; j+=40){
+        	color = 'rgb(' + Math.floor(Math.random()*255) + ',' + Math.floor(Math.random()*255) + ',' + Math.floor(Math.random()*255) + ')';
+        	balls.push(new Ball(i, j, 0, 0, color));
+        }
+        }
+        
+
+
+        // balls.push(new Ball(offset + 200, 200, 0, 0, green));
+        // balls.push(new Ball(offset + 220, 220, 0, 0, green));
+        // balls.push(new Ball(offset + 240, 240, 0, 0, green));
+        // balls.push(new Ball(offset + 260, 260, 0, 0, green));
+        // balls.push(new Ball(offset + 280, 280, 0, 0, green));
+        // balls.push(new Ball(offset + 300, 300, 0, 0, green));
+
+        // balls.push(new Ball(offset + 180, 420, 0, 0, blue));
+        // balls.push(new Ball(offset + 200, 400, 0, 0, blue));
+        // balls.push(new Ball(offset + 220, 380, 0, 0, blue));
+        // balls.push(new Ball(offset + 240, 360, 0, 0, blue));
+        // balls.push(new Ball(offset + 260, 340, 0, 0, blue));
+        // balls.push(new Ball(offset + 280, 320, 0, 0, blue));
+        
+        // balls.push(new Ball(offset + 160, 400, 0, 0, red));
+        // balls.push(new Ball(offset + 140, 380, 0, 0, red));
+        // balls.push(new Ball(offset + 120, 360, 0, 0, red));
+        // balls.push(new Ball(offset + 100, 340, 0, 0, red));
+        // balls.push(new Ball(offset + 80, 320, 0, 0, red));
+        // balls.push(new Ball(offset + 60, 300, 0, 0, red));
+        
+        // balls.push(new Ball(offset + 80, 280, 0, 0, yellow));
+        // balls.push(new Ball(offset + 100, 260, 0, 0, yellow));
+        // balls.push(new Ball(offset + 120, 240, 0, 0, yellow));
+        // balls.push(new Ball(offset + 140, 220, 0, 0, yellow));
+        // balls.push(new Ball(offset + 160, 200, 0, 0, yellow));
+        // balls.push(new Ball(offset + 180, 180, 0, 0, yellow));
+
+        return balls;
+      }
+
+      function updateBalls(canvas, balls, timeDiff) {
+        var context = canvas.getContext('2d');
+        var collisionDamper = 0.3;
+        var floorFriction = 0.0005 * timeDiff;
+        var mouseForceMultiplier = 1 * timeDiff;
+        var restoreForce = 0.002 * timeDiff;
+
+
+        
+
+        for(var n = 0; n < balls.length; n++) {
+          var ball = balls[n];
+
+          ball.y += ball.vy;
+          ball.x += ball.vx;
+
+          if(ball.x > ball.origX) {
+            ball.vx -= restoreForce;
+          }
+          else {
+            ball.vx += restoreForce;
+          }
+          if(ball.y > ball.origY) {
+            ball.vy -= restoreForce;
+          }
+          else {
+            ball.vy += restoreForce;
+          }		
+
+          if(ball.vx > 0) {
+            ball.vx -= floorFriction;
+          }
+          else if(ball.vx < 0) {
+            ball.vx += floorFriction;
+          }
+          if(ball.vy > 0) {
+            ball.vy -= floorFriction;
+          }
+          else if(ball.vy < 0) {
+            ball.vy += floorFriction;
+          }
+
+
+          if(ball.y > (canvas.height - ball.radius)) {
+            ball.y = canvas.height - ball.radius - 2;
+            ball.vy *= -1;
+            ball.vy *= (1 - collisionDamper);
+          }
+
+
+          if(ball.y < (ball.radius)) {
+            ball.y = ball.radius + 2;
+            ball.vy *= -1;
+            ball.vy *= (1 - collisionDamper);
+          }
+
+
+          if(ball.x > (canvas.width - ball.radius)) {
+            ball.x = canvas.width - ball.radius - 2;
+            ball.vx *= -1;
+            ball.vx *= (1 - collisionDamper);
+          }
+
+
+          if(ball.x < (ball.radius)) {
+            ball.x = ball.radius + 2;
+            ball.vx *= -1;
+            ball.vx *= (1 - collisionDamper);
+          }
+
+     	}
+
+     	for (var i = 0; i < balls.length; i++){
+     		ball1 = balls[i];
+     		for (var j = 0; j < balls.length; j++){
+     		ball2 = balls[j];
+     			if (i != j){
+		     		var dx = ball2.x - ball1.x;
+		      		var dy = ball2.y - ball1.y;
+		      		var distance = Math.sqrt(dx*dx + dy*dy);
+					if (distance < 20) { 
+				        var angle = Math.atan2(dy, dx);
+				        var targetX = ball1.x + Math.cos(angle) * 20;
+				        var targetY = ball1.y + Math.sin(angle) * 20;
+				        var ax = (targetX - ball2.x) * 0.05;
+				        var ay = (targetY - ball2.y) * 0.05;
+				        ball1.vx -= ax;
+				        ball1.vy -= ay;
+				        ball2.vx += ax;
+				        ball2.vy += ay;
+		     			}
+		     		}
+     	}
+     }
+
+     	
+
+     }
+
+      function Ball(x, y, vx, vy, color) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.color = color;
+        this.origX = x;
+        this.origY = y;
+        this.radius = 10;
+      }
+
+      function animate(canvas, balls, lastTime) {
+        var context = canvas.getContext('2d');
+        context.canvas.width  = window.innerWidth;
+  		context.canvas.height = window.innerHeight;
+
+        var date = new Date();
+        var time = date.getTime();
+        var timeDiff = time - lastTime;
+        updateBalls(canvas, balls, timeDiff);
+        lastTime = time;
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        context.font="50px Georgia";
+		context.fillText("CLICK TO ANIMATE",120,380);
+
+        for(var n = 0; n < balls.length; n++) {
+          var ball = balls[n];
+          context.beginPath();
+          context.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI, false);
+          context.fillStyle = ball.color;
+          context.fill();
+        }
+
+        requestAnimFrame(function() {
+          animate(canvas, balls, lastTime);
+        });
+      }
+      var canvas = document.getElementById('myCanvas');
+
+      var balls = initBalls(canvas);
+      var date = new Date();
+      var time = date.getTime();
+      var velocity = 0;
+
+      canvas.addEventListener("mousedown", function(evt) {
+      	for (var i = 0; i < balls.length; i++){
+      		var ball = balls[i];
+      		var switchdirection = Math.floor(Math.random()*10) - 5;
+      		if (velocity == 0){
+	      		if (switchdirection < 0){
+	      			ball.vx = Math.floor(Math.random()*10) - 5;
+	      		} else {
+	      			ball.vy = Math.floor(Math.random()*10) - 5;
+	      		} 
+	      	} else {
+	      		if (velocity < 10){
+	      		ball.vx *= 3;
+	      		ball.vy *= 3;
+	      		velocity += 1;
+	      		} else
+	      		{ 
+	      			velocity = 0;
+	      		}
+	      	}
+	      		   			
+      	}
+	  });
+
+      animate(canvas, balls, time);
+
+    </script>
+  </body>
+</html>
+      
