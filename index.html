@@ -111,7 +111,7 @@
 		     		var dx = ball2.x - ball1.x;
 		      		var dy = ball2.y - ball1.y;
 		      		var distance = Math.sqrt(dx*dx + dy*dy);
-					if (distance < 20) {
+					if (distance < (ball1.radius + ball2.radius)) {
 				        var angle = Math.atan2(dy, dx);
 				        var targetX = ball1.x + Math.cos(angle) * 20;
 				        var targetY = ball1.y + Math.sin(angle) * 20;
@@ -138,7 +138,7 @@
         this.color = color;
         this.origX = x;
         this.origY = y;
-        this.radius = 10;
+        this.radius = Math.random()*20;
       }
 
       function animate(canvas, balls, lastTime) {
@@ -172,12 +172,9 @@
       var time = date.getTime();
       var velocity = 0;
 
-      canvas.addEventListener("mousemove", function(evt) {
+      canvas.addEventListener("mousedown", function(evt) {
       	for (var i = 0; i < balls.length; i++){
 			var ball = balls[i];
-
-
-
 			ball.color =  'rgb(' + Math.floor(Math.random()*255) + ',' + Math.floor(Math.random()*255) + ',' + Math.floor(Math.random()*255) + ')';
       		var switchdirection = Math.floor(Math.random()*10) - 5;
       		if (velocity == 0){
@@ -197,10 +194,7 @@
 	      		}
 			    	}
 
-					if (Math.sqrt((evt.x-ball.x)*(evt.x-ball.x)+(evt.y-ball.y)*(evt.y-ball.y)) < 200){
-						ball.vx = abs(evt.x - ball.x);
-						ball.vy = abs(evt.y - ball.y);
-					}
+
 
       	}
 
