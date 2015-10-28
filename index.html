@@ -36,10 +36,9 @@
 
       function updateBalls(canvas, balls, timeDiff) {
         var context = canvas.getContext('2d');
-        var collisionDamper = 0.3;
-        var floorFriction = 0.0005 * timeDiff;
-        var mouseForceMultiplier = 1 * timeDiff;
-        var restoreForce = 0.002 * timeDiff;
+        var collisionDamper = 0.3; //коэф удара о стенки
+        var floorFriction = 0.0005 * timeDiff; //коэф трения, для замедления короче
+        var restoreForce = 0.002 * timeDiff; // сила для приведения шаров в исходное положение
 
         for(var n = 0; n < balls.length; n++) {
           var ball = balls[n];
@@ -47,6 +46,7 @@
           ball.y += ball.vy;
           ball.x += ball.vx;
 
+		  //это назад
           if(ball.x > ball.origX) {
             ball.vx -= restoreForce;
           }
@@ -60,6 +60,7 @@
             ball.vy += restoreForce;
           }
 
+		  // это замедление
           if(ball.vx > 0) {
             ball.vx -= floorFriction;
           }
@@ -73,7 +74,7 @@
             ball.vy += floorFriction;
           }
 
-
+		  //это границы
           if(ball.y > (canvas.height - ball.radius)) {
             ball.y = canvas.height - ball.radius - 2;
             ball.vy *= -1;
@@ -102,7 +103,7 @@
           }
 
      	}
-
+		//это столкновения
      	for (var i = 0; i < balls.length; i++){
      		ball1 = balls[i];
      		for (var j = 0; j < balls.length; j++){
@@ -138,7 +139,7 @@
         this.color = color;
         this.origX = x;
         this.origY = y;
-        this.radius = Math.random()*20;
+        this.radius = Math.random()*10;
       }
 
       function animate(canvas, balls, lastTime) {
@@ -194,10 +195,7 @@
 	      		}
 			    	}
 
-
-
       	}
-
 
 	  });
 
